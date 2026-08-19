@@ -271,8 +271,15 @@
         ctx.moveTo(x, axisY);
         ctx.lineTo(x, axisY + 5);
         ctx.stroke();
-        ctx.fillText(`Yr ${year}`, x, axisY + 9);
+        ctx.fillText(`${year}`, x, axisY + 9);
       }
+      const canvasWidth = ctx.canvas.width / (window.devicePixelRatio || 1);
+      const chartCenterX = MARGIN.left + (canvasWidth - MARGIN.left - MARGIN.right) / 2;
+      
+      ctx.font = "bold 13px system-ui, -apple-system, 'Segoe UI', sans-serif"; // Optional font style adjustment
+      ctx.fillStyle = theme.text || "#000"; // Fallback text color if theme.text isn't defined
+      ctx.fillText("Year", chartCenterX, axisY + 32); // Placed below the tick numbers
+ 
       ctx.restore();
     }
 
