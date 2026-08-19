@@ -100,7 +100,7 @@
     sentenceEl.appendChild(amountSpan);
     sentenceEl.appendChild(document.createTextNode(" in net worth."));
 
-    animateNumber(amountSpan, lastDifference == null ? 0 : lastDifference, summary.netWorthDifference);
+    animateNumber(amountSpan, lastDifference == null ? 0 : lastDifference, summary.netWorthDifference); //cool
     lastDifference = summary.netWorthDifference;
   }
 
@@ -142,7 +142,7 @@
     const investedLabel = document.getElementById("rbInvestedLabel");
     const investedValue = document.getElementById("rbInvested");
     if (invested >= 0) {
-      investedLabel.textContent = "Rest invested each month";
+      investedLabel.textContent = "Difference between mortgage and rent invested each month (this is the opportunity cost of buying)";
       setText("rbInvested", invested);
     } else {
       investedLabel.textContent = "Monthly shortfall (drawn from savings)";

@@ -381,7 +381,7 @@ input[type="range"]:focus-visible {
    the inputs panel is where the room goes. */
 .headline-card { padding: 20px 22px; }
 .headline-verdict {
-  font-size: 13px;
+  font-size: 35px;
   font-weight: 650;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -389,7 +389,7 @@ input[type="range"]:focus-visible {
   margin-bottom: 5px;
 }
 .headline-sentence {
-  font-size: 19px;
+  font-size: 25px;
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.35;
