@@ -14,6 +14,14 @@
  *     renting is cheaper adds to the account; a year where buying is
  *     cheaper draws it down. This single-account model is the standard,
  *     correct way to capture opportunity cost in both directions at once.
+ *
+ * Known simplifications (documented in the README too):
+ *   - Cash-flow timing is year-end, not the exact month things occur.
+ *   - Property tax/insurance/maintenance are modeled as a % of the
+ *     home's *appraised-equivalent* value at the start of each year, not
+ *     real assessment-cycle lag.
+ *   - A single flat marginal tax rate and standard deduction stand in for
+ *     a full tax-bracket calculation.
  */
 
 const SALT_CAP = 10000; // mortgage-interest + property-tax deduction cap, 2017 tax law

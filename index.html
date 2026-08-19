@@ -20,11 +20,30 @@
 </header>
 
 <main class="layout">
-  <!--  INPUTS  -->
+  <!-- ============================= RESULTS (compact sidebar) ============================= -->
+  <aside class="results-panel">
+    <div class="card headline-card">
+      <div class="headline-verdict" id="headlineVerdict">Result</div>
+      <div class="headline-sentence" id="headlineSentence">Calculating&hellip;</div>
+    </div>
+
+    <div class="card chart-card">
+      <div class="chart-card-header">
+        <h2>Net worth over time</h2>
+      </div>
+      <ul class="legend">
+        <li><span class="swatch buy"></span>Buy</li>
+        <li><span class="swatch rent"></span>Rent &amp; invest</li>
+      </ul>
+      <div id="chart"></div>
+    </div>
+  </aside>
+
+  <!-- ============================= INPUTS (factors) ============================= -->
   <form class="inputs-panel card" id="inputsForm">
 
     <fieldset class="input-group">
-      <legend>Home purchase</legend>
+      <legend>Basics</legend>
 
       <div class="field">
         <div class="field-row">
@@ -46,122 +65,153 @@
 
       <div class="field">
         <div class="field-row">
-          <label for="mortgageRatePercent">Mortgage rate</label>
-          <div class="field-value"><input type="number" id="mortgageRatePercent" min="0" max="15" step="0.05" value="6.5"><span class="unit">%</span></div>
+          <label for="yearsToStay">Years you'll stay</label>
+          <div class="field-value"><input type="number" id="yearsToStay" min="1" max="30" step="1" value="7"><span class="unit">yrs</span></div>
         </div>
-        <input type="range" min="0" max="12" step="0.05" value="6.5" data-sync="mortgageRatePercent">
-        <span class="help">Annual interest rate on the mortgage.</span>
-      </div>
-
-      <div class="field">
-        <div class="field-row">
-          <label for="mortgageTermYears">Mortgage term</label>
-          <select id="mortgageTermYears">
-            <option value="15">15 years</option>
-            <option value="20">20 years</option>
-            <option value="30" selected>30 years</option>
-          </select>
-        </div>
-        <span class="help">How long the mortgage is scheduled to be paid off.</span>
-      </div>
-
-      <div class="field">
-        <div class="field-row">
-          <label for="closingCostPercent">Closing costs</label>
-          <div class="field-value"><input type="number" id="closingCostPercent" min="0" max="10" step="0.1" value="3"><span class="unit">%</span></div>
-        </div>
-        <span class="help">One-time fees to buy (loan origination, title, etc.), as % of price.</span>
-      </div>
-
-      <div class="field">
-        <div class="field-row">
-          <label for="pmiRatePercent">PMI rate</label>
-          <div class="field-value"><input type="number" id="pmiRatePercent" min="0" max="3" step="0.05" value="0.5"><span class="unit">%/yr</span></div>
-        </div>
-        <span class="help">Private mortgage insurance, charged only while your equity is below 20%.</span>
+        <input type="range" min="1" max="30" step="1" value="7" data-sync="yearsToStay">
+        <span class="help">How long you plan to stay before moving or selling.</span>
       </div>
     </fieldset>
 
     <fieldset class="input-group">
-      <legend>Ongoing homeownership costs</legend>
+      <legend>Mortgage details</legend>
 
-      <div class="field">
-        <div class="field-row">
-          <label for="propertyTaxPercent">Property tax</label>
-          <div class="field-value"><input type="number" id="propertyTaxPercent" min="0" max="5" step="0.05" value="1.1"><span class="unit">%/yr</span></div>
+      <div class="field-grid">
+        <div class="field">
+          <div class="field-row">
+            <label for="mortgageRatePercent">Mortgage rate</label>
+            <div class="field-value"><input type="number" id="mortgageRatePercent" min="0" max="15" step="0.05" value="6.5"><span class="unit">%</span></div>
+          </div>
+          <span class="help">Annual interest rate on the mortgage.</span>
         </div>
-        <span class="help">Annual property tax, as % of the home's current value.</span>
-      </div>
 
-      <div class="field">
-        <div class="field-row">
-          <label for="homeInsurancePercent">Homeowners insurance</label>
-          <div class="field-value"><input type="number" id="homeInsurancePercent" min="0" max="3" step="0.05" value="0.5"><span class="unit">%/yr</span></div>
+        <div class="field">
+          <div class="field-row">
+            <label for="mortgageTermYears">Mortgage term</label>
+            <select id="mortgageTermYears">
+              <option value="15">15 years</option>
+              <option value="20">20 years</option>
+              <option value="30" selected>30 years</option>
+            </select>
+          </div>
+          <span class="help">How long the mortgage is scheduled to be paid off.</span>
         </div>
-        <span class="help">Annual insurance premium, as % of the home's current value.</span>
-      </div>
 
-      <div class="field">
-        <div class="field-row">
-          <label for="maintenancePercent">Maintenance</label>
-          <div class="field-value"><input type="number" id="maintenancePercent" min="0" max="5" step="0.1" value="1"><span class="unit">%/yr</span></div>
+        <div class="field">
+          <div class="field-row">
+            <label for="closingCostPercent">Closing costs</label>
+            <div class="field-value"><input type="number" id="closingCostPercent" min="0" max="10" step="0.1" value="3"><span class="unit">%</span></div>
+          </div>
+          <span class="help">One-time fees to buy, as % of price.</span>
         </div>
-        <span class="help">Repairs and upkeep, as % of the home's current value per year.</span>
-      </div>
 
-      <div class="field">
-        <div class="field-row">
-          <label for="hoaMonthly">HOA fees</label>
-          <div class="field-value"><span class="unit">$</span><input type="number" id="hoaMonthly" min="0" max="3000" step="10" value="0"></div>
+        <div class="field">
+          <div class="field-row">
+            <label for="pmiRatePercent">PMI rate</label>
+            <div class="field-value"><input type="number" id="pmiRatePercent" min="0" max="3" step="0.05" value="0.5"><span class="unit">%/yr</span></div>
+          </div>
+          <span class="help">Charged only while equity is below 20%.</span>
         </div>
-        <span class="help">Monthly homeowners association dues, if any.</span>
       </div>
     </fieldset>
 
-    <details class="input-group collapsible">
-      <summary>Selling costs</summary>
+    <fieldset class="input-group">
+      <legend>Home buying costs</legend>
+
       <div class="field-grid">
+        <div class="field">
+          <div class="field-row">
+            <label for="propertyTaxPercent">Property tax</label>
+            <div class="field-value"><input type="number" id="propertyTaxPercent" min="0" max="5" step="0.05" value="1.1"><span class="unit">%/yr</span></div>
+          </div>
+          <span class="help">As % of the home's current value.</span>
+        </div>
+
+        <div class="field">
+          <div class="field-row">
+            <label for="homeInsurancePercent">Homeowners insurance</label>
+            <div class="field-value"><input type="number" id="homeInsurancePercent" min="0" max="3" step="0.05" value="0.5"><span class="unit">%/yr</span></div>
+          </div>
+          <span class="help">As % of the home's current value.</span>
+        </div>
+
+        <div class="field">
+          <div class="field-row">
+            <label for="maintenancePercent">Maintenance</label>
+            <div class="field-value"><input type="number" id="maintenancePercent" min="0" max="5" step="0.1" value="1"><span class="unit">%/yr</span></div>
+          </div>
+          <span class="help">Repairs and upkeep, per year.</span>
+        </div>
+
+        <div class="field">
+          <div class="field-row">
+            <label for="hoaMonthly">HOA fees</label>
+            <div class="field-value"><span class="unit">$</span><input type="number" id="hoaMonthly" min="0" max="3000" step="10" value="0"></div>
+          </div>
+          <span class="help">Monthly homeowners association dues, if any.</span>
+        </div>
+
         <div class="field">
           <div class="field-row">
             <label for="sellingCostPercent">Selling costs</label>
             <div class="field-value"><input type="number" id="sellingCostPercent" min="0" max="10" step="0.1" value="6"><span class="unit">%</span></div>
           </div>
-          <span class="help">Agent commission and closing costs when you eventually sell.</span>
+          <span class="help">Agent commission and fees when you eventually sell.</span>
         </div>
       </div>
-    </details>
 
-    <fieldset class="input-group">
-      <legend>Renting</legend>
-
-      <div class="field">
-        <div class="field-row">
-          <label for="monthlyRent">Monthly rent</label>
-          <div class="field-value"><span class="unit">$</span><input type="number" id="monthlyRent" min="0" step="50" value="2200"></div>
-        </div>
-        <input type="range" min="500" max="8000" step="50" value="2200" data-sync="monthlyRent">
-        <span class="help">What you'd pay in rent today for a comparable place.</span>
-      </div>
-
-      <div class="field">
-        <div class="field-row">
-          <label for="rentersInsuranceMonthly">Renters insurance</label>
-          <div class="field-value"><span class="unit">$</span><input type="number" id="rentersInsuranceMonthly" min="0" max="200" step="1" value="15"></div>
-        </div>
-        <span class="help">Monthly renters insurance premium.</span>
-      </div>
-
-      <div class="field">
-        <div class="field-row">
-          <label for="rentGrowthPercent">Rent growth</label>
-          <div class="field-value"><input type="number" id="rentGrowthPercent" min="0" max="10" step="0.1" value="3"><span class="unit">%/yr</span></div>
-        </div>
-        <span class="help">How much your rent is likely to rise each year.</span>
+      <div class="breakdown-box" id="mortgageBreakdown">
+        <h3>Your monthly mortgage payment</h3>
+        <div class="breakdown-row"><span>Principal &amp; interest</span><span id="mbPrincipalInterest">&mdash;</span></div>
+        <div class="breakdown-row"><span>Property tax</span><span id="mbPropertyTax">&mdash;</span></div>
+        <div class="breakdown-row"><span>Homeowners insurance</span><span id="mbInsurance">&mdash;</span></div>
+        <div class="breakdown-row" id="mbPmiRow"><span>PMI</span><span id="mbPmi">&mdash;</span></div>
+        <div class="breakdown-row"><span>HOA fees</span><span id="mbHoa">&mdash;</span></div>
+        <div class="breakdown-row breakdown-total"><span>Total monthly payment</span><span id="mbTotal">&mdash;</span></div>
       </div>
     </fieldset>
 
-    <details class="input-group collapsible" open>
-      <summary>Market &amp; investment assumptions</summary>
+    <fieldset class="input-group">
+      <legend>Renting costs</legend>
+
+      <div class="field-grid">
+        <div class="field">
+          <div class="field-row">
+            <label for="monthlyRent">Monthly rent</label>
+            <div class="field-value"><span class="unit">$</span><input type="number" id="monthlyRent" min="0" step="50" value="2200"></div>
+          </div>
+          <span class="help">What you'd pay today for a comparable place.</span>
+        </div>
+
+        <div class="field">
+          <div class="field-row">
+            <label for="rentersInsuranceMonthly">Renters insurance</label>
+            <div class="field-value"><span class="unit">$</span><input type="number" id="rentersInsuranceMonthly" min="0" max="200" step="1" value="15"></div>
+          </div>
+          <span class="help">Monthly renters insurance premium.</span>
+        </div>
+
+        <div class="field">
+          <div class="field-row">
+            <label for="rentGrowthPercent">Rent growth</label>
+            <div class="field-value"><input type="number" id="rentGrowthPercent" min="0" max="10" step="0.1" value="3"><span class="unit">%/yr</span></div>
+          </div>
+          <span class="help">How much your rent is likely to rise each year.</span>
+        </div>
+      </div>
+
+      <div class="breakdown-box" id="rentBreakdown">
+        <h3>Your monthly rent &amp; what gets invested</h3>
+        <div class="breakdown-row"><span>Rent</span><span id="rbRent">&mdash;</span></div>
+        <div class="breakdown-row"><span>Renters insurance</span><span id="rbInsurance">&mdash;</span></div>
+        <div class="breakdown-row breakdown-total"><span>Total monthly renting cost</span><span id="rbTotal">&mdash;</span></div>
+        <div class="breakdown-row breakdown-invested"><span id="rbInvestedLabel">Difference invested each month</span><span id="rbInvested">&mdash;</span></div>
+      </div>
+    </fieldset>
+
+    <fieldset class="input-group">
+      <legend>Investment details</legend>
+
       <div class="field-grid">
         <div class="field">
           <div class="field-row">
@@ -175,7 +225,7 @@
             <label for="investmentReturnPercent">Investment return</label>
             <div class="field-value"><input type="number" id="investmentReturnPercent" min="0" max="15" step="0.1" value="6"><span class="unit">%/yr</span></div>
           </div>
-          <span class="help">What you could earn investing money you didn't spend on a down payment (e.g. in a diversified portfolio).</span>
+          <span class="help">What the renter could earn investing the difference (e.g. a diversified portfolio).</span>
         </div>
         <div class="field">
           <div class="field-row">
@@ -185,7 +235,7 @@
           <span class="help">Used to grow HOA fees and renters insurance over time.</span>
         </div>
       </div>
-    </details>
+    </fieldset>
 
     <details class="input-group collapsible">
       <summary>Tax situation</summary>
@@ -206,70 +256,31 @@
         </div>
       </div>
     </details>
-
-    <fieldset class="input-group">
-      <legend>Horizon</legend>
-      <div class="field">
-        <div class="field-row">
-          <label for="yearsToStay">Years you'll stay</label>
-          <div class="field-value"><input type="number" id="yearsToStay" min="1" max="30" step="1" value="7"><span class="unit">yrs</span></div>
-        </div>
-        <input type="range" min="1" max="30" step="1" value="7" data-sync="yearsToStay">
-        <span class="help">How long you plan to stay before moving or selling.</span>
-      </div>
-    </fieldset>
   </form>
-
-  <!-- ============================= RESULTS ============================= -->
-  <section class="results-panel">
-    <div class="card headline-card">
-      <div class="headline-verdict" id="headlineVerdict">Result</div>
-      <div class="headline-sentence" id="headlineSentence">Calculating&hellip;</div>
-    </div>
-
-    <div class="card chart-card">
-      <div class="chart-card-header">
-        <h2>Net worth over time</h2>
-        <ul class="legend">
-          <li><span class="swatch buy"></span>Buy</li>
-          <li><span class="swatch rent"></span>Rent &amp; invest the difference</li>
-        </ul>
-      </div>
-      <div id="chart"></div>
-    </div>
-
-    <div class="card table-card">
-      <h2>Year-by-year breakdown</h2>
-      <span class="help">The full numbers behind the chart above -- also here for anyone who'd rather read a table.</span>
-      <div class="table-scroll">
-        <table class="breakdown" id="breakdownTable">
-          <thead>
-            <tr>
-              <th>Year</th>
-              <th>Buying cost</th>
-              <th>Renting cost</th>
-              <th>Buyer net worth</th>
-              <th>Renter net worth</th>
-            </tr>
-          </thead>
-          <tbody id="breakdownBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
 </main>
 
-<p class="disclaimer">
-  This tool is for illustration and education only -- it is not financial advice.
-  It models a simplified version of a genuinely complex decision (see the
-  Methodology section of the <a href="README.md">README</a> for exactly which
-  simplifications it makes) and every number here is only as good as the
-  assumptions you put in.
-</p>
+<section class="table-card card">
+  <h2>Year-by-year breakdown</h2>
+  <span class="help">The full numbers behind the chart above -- also here for anyone who'd rather read a table.</span>
+  <div class="table-scroll">
+    <table class="breakdown" id="breakdownTable">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Buying cost</th>
+          <th>Renting cost</th>
+          <th>Buyer net worth</th>
+          <th>Renter net worth</th>
+        </tr>
+      </thead>
+      <tbody id="breakdownBody"></tbody>
+    </table>
+  </div>
+</section>
 
 <script src="js/calculator.js"></script>
 <script src="js/chart.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/main.js"></script>
 </body>
-</html> 
+</html>

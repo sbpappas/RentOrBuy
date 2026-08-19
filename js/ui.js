@@ -104,6 +104,52 @@
     lastDifference = summary.netWorthDifference;
   }
 
+  // Both boxes read off the *first* year of the simulation -- i.e. what
+  // you'd actually pay next month at today's price/rent, before growth,
+  // appreciation, or the investment-return compounding kick in.
+  function renderMonthlyBreakdowns(years) {
+    const first = years[0];
+    const setText = (id, value) => {
+      document.getElementById(id).textContent = RentVsBuy.formatCurrency(Math.round(value));
+    };
+
+    if (!first) return;
+
+    const principalInterest = first.mortgagePayment / 12;
+    const propertyTax = first.propertyTax / 12;
+    const insurance = first.homeInsurance / 12;
+    const pmi = first.pmi / 12;
+    const hoa = first.hoa / 12;
+    const mortgageTotal = principalInterest + propertyTax + insurance + pmi + hoa;
+
+    setText("mbPrincipalInterest", principalInterest);
+    setText("mbPropertyTax", propertyTax);
+    setText("mbInsurance", insurance);
+    setText("mbPmi", pmi);
+    setText("mbHoa", hoa);
+    setText("mbTotal", mortgageTotal);
+    document.getElementById("mbPmiRow").hidden = pmi < 0.5;
+
+    const rent = first.rent / 12;
+    const rentersInsurance = first.rentersInsurance / 12;
+    const rentTotal = rent + rentersInsurance;
+    const invested = (first.buyingCost - first.rentingCost) / 12;
+
+    setText("rbRent", rent);
+    setText("rbInsurance", rentersInsurance);
+    setText("rbTotal", rentTotal);
+
+    const investedLabel = document.getElementById("rbInvestedLabel");
+    const investedValue = document.getElementById("rbInvested");
+    if (invested >= 0) {
+      investedLabel.textContent = "Rest invested each month";
+      setText("rbInvested", invested);
+    } else {
+      investedLabel.textContent = "Monthly shortfall (drawn from savings)";
+      setText("rbInvested", Math.abs(invested));
+    }
+  }
+
   function renderTable(years) {
     const tbody = document.getElementById("breakdownBody");
     tbody.textContent = "";
@@ -135,6 +181,7 @@
       const summary = RentVsBuy.summarize(years);
       renderHeadline(summary, inputs.yearsToStay);
       chart.update(years, summary);
+      renderMonthlyBreakdowns(years);
       renderTable(years);
     };
 

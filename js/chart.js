@@ -15,7 +15,7 @@
  */
 
 (function () {
-  const MARGIN = { top: 24, right: 20, bottom: 32, left: 64 };
+  const MARGIN = { top: 24, right: 24, bottom: 40, left: 72 };
   const ANIMATION_MS = 400;
 
   function easeOutCubic(t) {
@@ -58,6 +58,20 @@
       else niceFraction = 10;
     }
     return niceFraction * Math.pow(10, exponent);
+  }
+
+  // Picks a readable subset of whole years for the x-axis -- every year
+  // for a short horizon, thinning out to a clean step (2, 5, 10, ...) for
+  // a long one so labels never crowd into each other. The final year is
+  // always included so the axis never looks like it stops early.
+  function pickYearTicks(minYear, maxYear, maxLabels = 8) {
+    const span = maxYear - minYear;
+    if (span <= 0) return [minYear];
+    const step = Math.max(1, niceNum(Math.ceil(span / (maxLabels - 1)), true));
+    const ticks = [];
+    for (let y = minYear; y < maxYear; y += step) ticks.push(y);
+    ticks.push(maxYear);
+    return ticks;
   }
 
   class NetWorthChart {
@@ -169,6 +183,7 @@
 
       this._drawGridlines(ctx, theme, ticks, yForValue, width);
       this._drawZeroBaseline(ctx, theme, yMin, yMax, yForValue, width);
+      this._drawXAxis(ctx, theme, xForYear, MARGIN.top + plotHeight);
 
       const interpolated = this.years.map((y, i) => {
         if (!this.prevYears || !this.prevYears[i]) return y;
@@ -205,7 +220,7 @@
       ctx.save();
       ctx.strokeStyle = theme.gridline;
       ctx.lineWidth = 1;
-      ctx.font = "12px system-ui, -apple-system, 'Segoe UI', sans-serif";
+      ctx.font = "13px system-ui, -apple-system, 'Segoe UI', sans-serif";
       ctx.fillStyle = theme.muted;
       ctx.textBaseline = "middle";
       for (const tick of ticks) {
@@ -230,6 +245,34 @@
       ctx.moveTo(MARGIN.left, y);
       ctx.lineTo(width - MARGIN.right, y);
       ctx.stroke();
+      ctx.restore();
+    }
+
+    _drawXAxis(ctx, theme, xForYear, axisY) {
+      const minYear = this.years[0].year;
+      const maxYear = this.years[this.years.length - 1].year;
+      const ticks = pickYearTicks(minYear, maxYear);
+
+      ctx.save();
+      ctx.strokeStyle = theme.baseline;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(MARGIN.left, Math.round(axisY) + 0.5);
+      ctx.lineTo(ctx.canvas.width / (window.devicePixelRatio || 1) - MARGIN.right, Math.round(axisY) + 0.5);
+      ctx.stroke();
+
+      ctx.font = "13px system-ui, -apple-system, 'Segoe UI', sans-serif";
+      ctx.fillStyle = theme.muted;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+      for (const year of ticks) {
+        const x = Math.round(xForYear(year)) + 0.5;
+        ctx.beginPath();
+        ctx.moveTo(x, axisY);
+        ctx.lineTo(x, axisY + 5);
+        ctx.stroke();
+        ctx.fillText(`Yr ${year}`, x, axisY + 9);
+      }
       ctx.restore();
     }
 
@@ -266,7 +309,7 @@
       // every point, and skipped entirely when it would collide with the
       // other series' end-label (see the caller in _draw()).
       if (showEndLabel) {
-        ctx.font = "600 12px system-ui, -apple-system, 'Segoe UI', sans-serif";
+        ctx.font = "600 13px system-ui, -apple-system, 'Segoe UI', sans-serif";
         ctx.fillStyle = theme.textPrimary;
         ctx.textAlign = "left";
         ctx.textBaseline = y < MARGIN.top + 14 ? "top" : "bottom";
@@ -286,7 +329,7 @@
       ctx.lineTo(x, top + plotHeight);
       ctx.stroke();
       ctx.setLineDash([]);
-      ctx.font = "11px system-ui, -apple-system, 'Segoe UI', sans-serif";
+      ctx.font = "12px system-ui, -apple-system, 'Segoe UI', sans-serif";
       ctx.fillStyle = theme.textSecondary;
       ctx.textAlign = "center";
       ctx.fillText(`Break-even: yr ${breakEvenYear}`, x, top - 8);
