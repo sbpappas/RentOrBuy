@@ -400,7 +400,7 @@ input[type="range"]:focus-visible {
 .headline-sentence .amount.buy { color: var(--series-buy); }
 .headline-sentence .amount.rent { color: var(--series-rent); }
 
-.chart-card { padding: 16px 16px 8px; }
+.chart-card { padding: 16px 16px 16px; }
 .chart-card-header {
   display: flex;
   align-items: center;

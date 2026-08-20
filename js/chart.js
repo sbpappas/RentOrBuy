@@ -15,7 +15,7 @@
  */
 
 (function () {
-  const MARGIN = { top: 24, right: 24, bottom: 40, left: 72 };
+  const MARGIN = { top: 24, right: 24, bottom: 50, left: 72 };
   const ANIMATION_MS = 400;
 
   function easeOutCubic(t) {
@@ -276,9 +276,10 @@
       const canvasWidth = ctx.canvas.width / (window.devicePixelRatio || 1);
       const chartCenterX = MARGIN.left + (canvasWidth - MARGIN.left - MARGIN.right) / 2;
       
-      ctx.font = "bold 13px system-ui, -apple-system, 'Segoe UI', sans-serif"; // Optional font style adjustment
-      ctx.fillStyle = theme.text || "#000"; // Fallback text color if theme.text isn't defined
-      ctx.fillText("Year", chartCenterX, axisY + 32); // Placed below the tick numbers
+      ctx.font = "18px system-ui, -apple-system, 'Segoe UI', sans-serif"; // Optional font style adjustment
+      ctx.textBaseline = "top"; // ensure the text is drawn inside the canvas, not below it
+      ctx.fillStyle = theme.textPrimary || "#000"; // Prefer defined primary text color
+      ctx.fillText("Year", chartCenterX, axisY + 30); // Placed below the tick numbers (moved up to avoid clipping)
  
       ctx.restore();
     }
