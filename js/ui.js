@@ -8,6 +8,7 @@
   const FIELD_IDS = [
     "homePrice",
     "downPaymentPercent",
+    "downPaymentAmount",
     "mortgageRatePercent",
     "mortgageTermYears",
     "closingCostPercent",
@@ -34,6 +35,23 @@
       inputs[id] = Number(document.getElementById(id).value);
     }
     return inputs;
+  }
+
+  function syncDownPaymentFields(sourceId) {
+    const homePrice = Number(document.getElementById("homePrice").value) || 0;
+    const percentInput = document.getElementById("downPaymentPercent");
+    const amountInput = document.getElementById("downPaymentAmount");
+
+    if (sourceId === "homePrice" || sourceId === "downPaymentPercent") {
+      const percentage = Number(percentInput.value) || 0;
+      amountInput.value = homePrice * (percentage / 100);
+      return;
+    }
+
+    if (sourceId === "downPaymentAmount") {
+      const amount = Number(amountInput.value) || 0;
+      percentInput.value = homePrice > 0 ? (amount / homePrice) * 100 : 0;
+    }
   }
 
   // Keeps every paired range/number input in sync (either direction) and
@@ -179,13 +197,26 @@
       const inputs = readInputs();
       const years = RentVsBuy.computeYearlyBreakdown(inputs);
       const summary = RentVsBuy.summarize(years);
+      const downPaymentDisplay = document.getElementById("downPaymentAmountValue");
+      if (downPaymentDisplay) {
+        const downPayment =
+          Number.isFinite(inputs.downPaymentAmount) && inputs.downPaymentAmount >= 0
+            ? Math.min(Math.max(0, inputs.downPaymentAmount), inputs.homePrice)
+            : inputs.homePrice * (inputs.downPaymentPercent / 100);
+        downPaymentDisplay.textContent = RentVsBuy.formatCurrency(Math.round(downPayment));
+      }
       renderHeadline(summary, inputs.yearsToStay);
       chart.update(years, summary);
       renderMonthlyBreakdowns(years);
       renderTable(years);
     };
 
-    document.getElementById("inputsForm").addEventListener("input", recalcAndRender);
+    document.getElementById("inputsForm").addEventListener("input", (event) => {
+      if (event.target && ["homePrice", "downPaymentPercent", "downPaymentAmount"].includes(event.target.id)) {
+        syncDownPaymentFields(event.target.id);
+      }
+      recalcAndRender();
+    });
     document.getElementById("inputsForm").addEventListener("submit", (e) => e.preventDefault());
     recalcAndRender();
   }

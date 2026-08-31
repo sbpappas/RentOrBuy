@@ -66,6 +66,7 @@ function computeYearlyBreakdown(inputs) {
   const {
     homePrice,
     downPaymentPercent,
+    downPaymentAmount,
     mortgageRatePercent,
     mortgageTermYears,
     closingCostPercent,
@@ -86,7 +87,11 @@ function computeYearlyBreakdown(inputs) {
     yearsToStay,
   } = inputs;
 
-  const downPayment = homePrice * (downPaymentPercent / 100);
+  const explicitDownPayment =
+    downPaymentAmount !== undefined && downPaymentAmount !== null && Number.isFinite(downPaymentAmount)
+      ? downPaymentAmount
+      : null;
+  const downPayment = explicitDownPayment != null ? Math.min(Math.max(0, explicitDownPayment), homePrice) : homePrice * (downPaymentPercent / 100);
   const closingCosts = homePrice * (closingCostPercent / 100);
   const loanAmount = Math.max(0, homePrice - downPayment);
   const schedule = amortizationSchedule(loanAmount, mortgageRatePercent, mortgageTermYears);
