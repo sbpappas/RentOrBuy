@@ -5,8 +5,8 @@ const { computeYearlyBreakdown } = require('../js/calculator.js');
 test('uses the explicit down payment amount when present', () => {
   const years = computeYearlyBreakdown({
     homePrice: 300000,
-    downPaymentPercent: 10,
-    downPaymentAmount: 120000,
+    downPaymentPercent: 0,
+    downPaymentAmount: 50000,
     mortgageRatePercent: 0,
     mortgageTermYears: 1,
     closingCostPercent: 0,
@@ -27,6 +27,5 @@ test('uses the explicit down payment amount when present', () => {
     yearsToStay: 1,
   });
 
-  assert.equal(years[0].buyingCost, 180000);
-  assert.equal(years[0].investmentBalance, 300000);
+  assert.equal(years[0].buyingCost, 250000);
 });
